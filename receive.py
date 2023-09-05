@@ -42,6 +42,7 @@ def send_space_to_serial():
 
         except Exception as e:
             print(f"Error sending space character: {e}")
+            time.sleep(10)
 
 
 # Create and start the space-sending thread
@@ -65,14 +66,22 @@ try:
 
             # Create the payload for the API request
             payload = [
-                {"name": "5077.voltage", "time": int(time.time()), "value": int(data)}
+                {
+                    "name": "5077.voltage",
+                    "time": int(time.time()),
+                    "value": int(data)
+                }
             ]
 
             # Set headers for the API request
-            headers = {"X-Api-Key": API_KEY, "Content-Type": "application/json"}
+            headers = {
+                "X-Api-Key": API_KEY,
+                "Content-Type": "application/json"
+            }
 
             # Send API request
-            response = requests.post(API_ENDPOINT, json=payload, headers=headers)
+            response = requests.post(
+                API_ENDPOINT, json=payload, headers=headers)
 
             # Print API response
             print(f"API Response: {response.status_code} - {response.text}")
@@ -81,10 +90,8 @@ try:
             print(f"Error processing serial data: {e}")
             print("sleep and reopen")
             ser.close()
-            space_thread.pause()
             time.sleep(10)
             ser.open()
-            space_thread.resume()
 
 except KeyboardInterrupt:
     # Close the serial connection on Ctrl+C
