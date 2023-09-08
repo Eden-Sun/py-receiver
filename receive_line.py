@@ -64,7 +64,7 @@ try:
             # Set the reset event to reset the space thread
             reset_space_thread_event.set()
 
-            access_token = 'API_KEY'
+            access_token = API_KEY
 
             # URL for the Line Notify API
             url = 'https://notify-api.line.me/api/notify'
