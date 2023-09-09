@@ -107,15 +107,13 @@ try:
 
             if current_time - pre_received_time > 30:
                 notify_line(f"alive: {data} {voltage} {percent}%")
-                pre_received_time = current_time
                 pre_sent_time = current_time
-                continue
 
             if current_time - pre_sent_time > 600:
                 notify_line(f"v: {data} {voltage} {percent}%")
                 pre_sent_time = current_time
-                continue
-            print("skip send")
+
+            pre_received_time = current_time
 
         except Exception as e:
             print(f"Error processing serial data: {e}")
