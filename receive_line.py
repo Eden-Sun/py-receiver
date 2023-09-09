@@ -28,17 +28,18 @@ reset_space_thread_event = threading.Event()
 def send_space_to_serial():
     while True:
         try:
-            if reset_space_thread_event.wait(
-                5 if reset_space_thread_event.is_set() else 10
-            ):
+            reset_space_thread_event.wait(10)
+            if reset_space_thread_event.is_set():
+                # write response
+                ser.write(b"___")
+                print("Sent response")
                 reset_space_thread_event.clear()
+                continue
 
             # Send a space character to the serial port
             ser.write(b" ")
 
-            # Print log message with timestamp (time only)
-            current_time = time.strftime("%H:%M:%S")
-            print(f"Sent at {current_time}: Space character")
+            print("Send at Space interval")
 
         except Exception as e:
             print(f"Error sending space character: {e}")
