@@ -51,15 +51,34 @@ space_thread = threading.Thread(target=send_space_to_serial)
 space_thread.daemon = True
 space_thread.start()
 
+
+def getPercent(voltage):
+    p = 0
+    if voltage > 11.36:
+        p = (voltage - 11.36) * 0.015
+    if voltage > 11.96:
+        p = 40 + (voltage - 11.96) * 0.014
+    if voltage > 12.24:
+        p = 60 + (voltage - 12.24) * 0.013
+    if voltage > 12.5:
+        p = 80 + (voltage - 12.5) * 0.012
+    if voltage > 12.62:
+        p = 90 + (voltage - 12.62) * 0.012
+    return int(p)
+
+
 try:
     while True:
         try:
             # Read data from the serial port
             data = ser.readline().decode("utf-8").strip()
+            voltage = int(data) * 0.02269
+            voltage = round(voltage, 2)
+            percent = getPercent(voltage)
 
             # Print received data with timestamp (time only)
             current_time = time.strftime("%H:%M:%S")
-            print(f"Received at {current_time}: {data}")
+            print(f"Received at {current_time}: {data} {percent}%")
 
             # Set the reset event to reset the space thread
             reset_space_thread_event.set()
@@ -70,7 +89,7 @@ try:
             url = 'https://notify-api.line.me/api/notify'
 
             # Message to send
-            message = 'Got value:' + data
+            message = f"Got value: {data} {voltage}"
 
             # Set headers with the access token
             headers = {
