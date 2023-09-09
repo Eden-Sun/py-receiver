@@ -78,7 +78,7 @@ try:
 
             # Print received data with timestamp (time only)
             current_time = time.strftime("%H:%M:%S")
-            print(f"Received at {current_time}: {data} {percent}%")
+            print(f"Received at {current_time}: {data}")
 
             # Set the reset event to reset the space thread
             reset_space_thread_event.set()
@@ -89,7 +89,7 @@ try:
             url = 'https://notify-api.line.me/api/notify'
 
             # Message to send
-            message = f"Got value: {data} {voltage}"
+            message = f"Got value: {data} {voltage} {percent}%"
 
             # Set headers with the access token
             headers = {
