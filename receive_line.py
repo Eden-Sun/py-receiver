@@ -52,7 +52,7 @@ space_thread.daemon = True
 space_thread.start()
 
 
-def getPercent(voltage):
+def get_percent(voltage):
     p = 0
     if voltage > 11.36:
         p = (voltage - 11.36) / 0.015
@@ -63,9 +63,26 @@ def getPercent(voltage):
     if voltage > 12.5:
         p = 80 + (voltage - 12.5) / 0.012
     if voltage > 12.62:
-        p = 90 + (voltage - 12.62) / 0.012
+        p = 90 + (voltage - 12.62) / 0.011
     return int(p)
 
+
+def notify_line(message):
+    url = "https://notify-api.line.me/api/notify"
+    # Set headers with the access token
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+
+    # Data to send in the POST request
+    data = {"message": message}
+    # Send the POST request to Line Notify
+    response = requests.post(url, headers=headers, data=data)
+
+    # Print API response
+    print(f"API Response: {response.status_code} - {response.text}")
+
+
+pre_received_time = 0
+pre_sent_time = 0
 
 try:
     while True:
@@ -74,7 +91,7 @@ try:
             data = ser.readline().decode("utf-8").strip()
             voltage = int(data) * 0.02269
             voltage = round(voltage, 2)
-            percent = getPercent(voltage)
+            percent = get_percent(voltage)
 
             # Print received data with timestamp (time only)
             current_time = time.strftime("%H:%M:%S")
@@ -83,33 +100,26 @@ try:
             # Set the reset event to reset the space thread
             reset_space_thread_event.set()
 
-            access_token = API_KEY
-
-            # URL for the Line Notify API
-            url = 'https://notify-api.line.me/api/notify'
-
             # Message to send
             message = f"Got value: {data} {voltage} {percent}%"
 
-            # Set headers with the access token
-            headers = {
-                'Authorization': f'Bearer {access_token}'
-            }
+            current_time = int(time.time())
 
-            # Data to send in the POST request
-            data = {
-                'message': message
-            }
+            if current_time - pre_received_time > 30:
+                notify_line(f"alive: {data} {voltage} {percent}%")
+                pre_received_time = current_time
+                pre_sent_time = current_time
+                continue
 
-            # Send the POST request to Line Notify
-            response = requests.post(url, headers=headers, data=data)
-
-            # Print API response
-            print(f"API Response: {response.status_code} - {response.text}")
+            if current_time - pre_sent_time > 600:
+                notify_line(f"v: {data} {voltage} {percent}%")
+                pre_sent_time = current_time
+                continue
+            print("skip send")
 
         except Exception as e:
             print(f"Error processing serial data: {e}")
-            print("sleep and reopen")
+            notify_line("IO error, restart serial")
             ser.close()
             time.sleep(10)
             ser.open()
