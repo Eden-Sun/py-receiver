@@ -55,15 +55,15 @@ space_thread.start()
 def getPercent(voltage):
     p = 0
     if voltage > 11.36:
-        p = (voltage - 11.36) * 0.015
+        p = (voltage - 11.36) / 0.015
     if voltage > 11.96:
-        p = 40 + (voltage - 11.96) * 0.014
+        p = 40 + (voltage - 11.96) / 0.014
     if voltage > 12.24:
-        p = 60 + (voltage - 12.24) * 0.013
+        p = 60 + (voltage - 12.24) / 0.013
     if voltage > 12.5:
-        p = 80 + (voltage - 12.5) * 0.012
+        p = 80 + (voltage - 12.5) / 0.012
     if voltage > 12.62:
-        p = 90 + (voltage - 12.62) * 0.012
+        p = 90 + (voltage - 12.62) / 0.012
     return int(p)
 
 
