@@ -69,17 +69,20 @@ def get_percent(voltage):
 
 
 def notify_line(message):
-    url = "https://notify-api.line.me/api/notify"
-    # Set headers with the access token
-    headers = {"Authorization": f"Bearer {API_KEY}"}
+    try:
+        url = "https://notify-api.line.me/api/notify"
+        # Set headers with the access token
+        headers = {"Authorization": f"Bearer {API_KEY}"}
 
-    # Data to send in the POST request
-    data = {"message": message}
-    # Send the POST request to Line Notify
-    response = requests.post(url, headers=headers, data=data)
+        # Data to send in the POST request
+        data = {"message": message}
+        # Send the POST request to Line Notify
+        response = requests.post(url, headers=headers, data=data)
 
-    # Print API response
-    print(f"API Response: {response.status_code} - {response.text}")
+        # Print API response
+        print(f"API Response: {response.status_code} - {response.text}")
+    except Exception as e:
+        print("http error", e)
 
 
 pre_received_time = 0
