@@ -106,7 +106,7 @@ try:
 
             # Message to send
             message = f"Got value: {data} {voltage} {percent}%"
-            percent_word = "充電中" if percent > 13.0 else f"{percent}%"
+            percent_word = "充電中" if voltage > 13.0 else f"{percent}%"
 
             current_time = int(time.time())
 
