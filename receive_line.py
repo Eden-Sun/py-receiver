@@ -106,15 +106,16 @@ try:
 
             # Message to send
             message = f"Got value: {data} {voltage} {percent}%"
+            percent_word = "充電中" if percent > 13.0 else f"{percent}%"
 
             current_time = int(time.time())
 
             if current_time - pre_received_time > 30:
-                notify_line(f"alive: {data} {voltage} {percent}%")
+                notify_line(f"alive: {data} {voltage} {percent_word}")
                 pre_sent_time = current_time
 
             if current_time - pre_sent_time > 600:
-                notify_line(f"v: {data} {voltage} {percent}%")
+                notify_line(f"v: {data} {voltage} {percent_word}")
                 pre_sent_time = current_time
 
             pre_received_time = current_time
