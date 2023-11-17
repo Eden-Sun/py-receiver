@@ -87,6 +87,7 @@ def notify_line(message):
 
 pre_received_time = 0
 pre_sent_time = 0
+notify_line("program started")
 
 try:
     while True:
